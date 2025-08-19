@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/assets/css/style.css?v=2051196d2f77dd4cea82b971dc4603111ec7283c">
+    <link rel="stylesheet" type="text/css" href="/assets/css/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Rustify Your Projects (Now) | rustify-your-projects</title>
+<meta name="generator" content="Jekyll v3.9.5" />
+<meta property="og:title" content="Rustify Your Projects (Now)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Data toolbox and thoughts. Edited by Sebestyen" />
+<meta property="og:description" content="Data toolbox and thoughts. Edited by Sebestyen" />
+<link rel="canonical" href="http://localhost:4000/" />
+<meta property="og:url" content="http://localhost:4000/" />
+<meta property="og:site_name" content="rustify-your-projects" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Rustify Your Projects (Now)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","description":"Data toolbox and thoughts. Edited by Sebestyen","headline":"Rustify Your Projects (Now)","name":"rustify-your-projects","url":"http://localhost:4000/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7Z0VRN7P3Q"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7Z0VRN7P3Q');
+</script>
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Rustify Your Projects (Now)</h1>
+          <h2> </h2>
+        </header>
+        <section id="downloads" class="clearfix">
+          
+	
+        </section>
+        <hr>
+        <section id="main_content">
+          <style>
+  .home-link {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    display: inline-block;
+    background-color: #FBFBF7;
+    color: #000;
+    font-family: "Proxima Nova", sans-serif;
+    font-size: 16px;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .home-link:hover {
+    background-color: #eee;
+    color: #000;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  @media screen and (max-width: 768px) {
+    .home-link {
+      top: 10px;
+      right: 10px;
+      left: auto;
+    }
+  }
+</style>
+
+<a href="https://datolya.github.io" class="home-link">Home</a>
+
+
+<article style="background-color: rgb(245, 248, 252); padding: 30px; border-radius: 16px; color: #333333; line-height: 1.6; text-align: justify; text-align-last: left; hyphens: none; word-break: keep-all; overflow-wrap: normal; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); max-width: 900px; margin: 0 auto;">
+    
+    
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    📊 August 19th, 2025  📝 authored by Sebestyén Gergely 
+</code></pre></div></div>
+
+<p>It isn’t immediately obvious why one should invest time in the <em>perfect</em> repository setup. 
+Especially in data, it is often cumbersome to take your maths genius analyst colleagues, sit down 
+down and explain about virtual environments, the kind of poetry only software engineers know, why they should give a damn about 
+linting, let alone style formatting and type hints.</p>
+
+<p>Luckily, Rust exists, and people exist who build formidable tools with it for Python.
+“Rustifying” your repository now means all of the above should take two clicks, and even non-technical people will enjoy
+seeing the speed and simplicity of their solution.</p>
+
+<p>PART I. The <code class="language-plaintext highlighter-rouge">uv</code> radiation is strong</p>
+
+<p><code class="language-plaintext highlighter-rouge">uv</code> <a href="https://docs.astral.sh/uv/">self-identifies</a> as a <em>fast Python package and project manager</em>. The simplicity of this
+intro already gives us an impression of what it feels like using this tool. They also attach a neat figure to tell us the speed we should expect:</p>
+
+<div style="text-align: center; margin: 20px 0;">
+  <img src="assets/uv_chart.png" alt="Alt text" style="max-width: 100%; height: auto;" />
+</div>
+
+<p>This gives us the first property where <code class="language-plaintext highlighter-rouge">uv</code> beats <code class="language-plaintext highlighter-rouge">poetry</code> » <strong>speed</strong></p>
+
+<p>In my career as Big Data Engineer, I have met many developers who had been aware for many months of this speed improvement,
+yet never took the time to test the tool for themselves, let alone introduce it in production workflows.</p>
+
+<p>Their oversight here is made worse by the second massive feat of <code class="language-plaintext highlighter-rouge">uv</code> » <strong>automatic version resolution</strong></p>
+
+<p>Unlike with poetry, we will be able to define a generic set of Python packages, and leave it to our package manager to generate our
+requirements.txt file, insert the correct versions, reconcile everything, then download all of that within the fraction of a minute.</p>
+
+<p>Let’s see, how we make use of the Rust revolution.</p>
+
+<p>Step I.: Install Rust</p>
+
+<p>The easiest way to have all the necessary requirements for <code class="language-plaintext highlighter-rouge">uv</code> is to install cargo on our machine, the package manager of Rust.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-&gt; cargo (Rust package manager) needs to be present on our machine
+--&gt; create requirements.in
+---&gt; uv pip compile requirements.in -o requirements.txt
+</code></pre></div></div>
+
+<p>/ Here uv automatically generates our .txt with comments on dependencies</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv pip install -r requirements.txt
+</code></pre></div></div>
+
+<p>/ Make sure the .venv is correctly set for pycharm (repository root and correct Python version)
+Easy way to create uv venv: 
+<code class="language-plaintext highlighter-rouge">uv venv --python 3.12.9</code>
+<code class="language-plaintext highlighter-rouge">source .venv/bin/activate</code></p>
+
+<p>Note that uv treates req.txt AS THE LOCKFILE ITSELF. So we commit it with the repo and that’s it.</p>
+
+<p>Use another clever Rust tool for linting!!!</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruff format .
+ruff check --fix
+</code></pre></div></div>
+
+<p>Let’s use <code class="language-plaintext highlighter-rouge">uv</code> since it’s much faster than poetry! 
+We want to use the rust revolution to our advantage.</p>
+
+<p>PART II. CREATE A DATA LAKE WITH GCS</p>
+
+<p>We use a terraform subdir and generate resources programmatically.
+Structure our lake by raw, staging, processed etc.
+Free trial quota project with Google.</p>
+
+<p>PART III. AIRFLOW CONFIG
+As of 25 April 2025, the latest supported Python version by Airflow is &lt; 3.13
+So we install last stable version 3.12.9</p>
+
+<p>WHAT’S NEW IN AIRFLOW 3.0.0 (Published 22 April)
+-&gt; Event-driven architecture possible (assets, like Dagster)
+-&gt; Environment can scale to zero (no need for constant uptime anymore)</p>
+
+<p>Airflow already has native support for uv <a href="https://airflow.apache.org/docs/apache-airflow/stable/start.html">by documentation</a>
+In fact installing via Poetry is NOT recommended by them!</p>
+
+<ul>
+  <li>We set home dir for install <code class="language-plaintext highlighter-rouge">export AIRFLOW_HOME=~/airflow</code>. Then copy paste commands from docs.</li>
+  <li>Note we’re working with Airflow 3.0.0 where operators are now under <code class="language-plaintext highlighter-rouge">airflow.providers.standard.operators.empty</code></li>
+  <li>Airflow 3.0.0 started copying Dagster in terms of asset driven workflows. So let’s try to use it!
+    <ul>
+      <li>Note Cloud Composer won’t have support for it for some time (only Airflow 2).</li>
+    </ul>
+  </li>
+  <li>To run Airflow with Docker Commpose, use <a href="https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html">this guide</a></li>
+  <li>Run <code class="language-plaintext highlighter-rouge">docker compose up airflow-init</code> Then <code class="language-plaintext highlighter-rouge">docker compose up</code>
+    <ul>
+      <li>Note this is not optimized for production workflows.</li>
+      <li>As per Google <a href="https://cloud.google.com/composer/docs/release-notes">release notes</a>:
+        <ul>
+          <li>we don’t know when Airflow 3.0 will be supported, 2.10.5 they released with 2 months lag</li>
+          <li>As per <a href="https://github.com/apache/airflow/issues/49646">recent discussion</a> we need to set explicit auth jwt secret for workers</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>SHOW EVENT BASED FLOW IN AN AIRFLOW 3.0.0 SEPARATE ARTICLE.
+So probably
+#1 infra based: uv, ruff, docker setup for data tools (airflow[uv], postgres, kafka etc.)
+#2 Airflow 3.0.0 event based, scales to zero, reparse dag, etc. mention novelties from YT video
+https://www.youtube.com/watch?v=PMO5LPc112E&amp;t=493s</p>
+
+<h1 id="todo-add-uv-github-actions-step--circleci-maybe">TODO: Add uv github actions step + circleci maybe</h1>
+
+
+</article>
+
+<footer class="custom-footer" style="margin-top: 50px; text-align: center;">
+  <p><span style="font-weight: 310;">Copyright &copy; 2025 Sebestyén Gergely</span></p>
+</footer>
+
+<style>
+  footer:not(.custom-footer) {
+    display: none;
+  }
+
+  body {
+    background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.8), rgba(230, 230, 255, 0.8)),
+                url('https://images.unsplash.com/photo-1535909339361-9b77c7b1c77f?auto=format&fit=crop&w=1950&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: "Proxima Nova", sans-serif;
+  }
+
+  .wrapper, .container, #container, #content, main, body > div {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  article {
+    background-color: rgb(245, 248, 252);
+    color: #333;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  footer.custom-footer p {
+    font-weight: 300;
+    font-size: 14px;
+    color: #777;
+  }
+
+  footer.custom-footer p span {
+    font-weight: 310;
+    color: #333;
+  }
+</style>
+
+        </section>
+
+        <footer>
+        
+          rustify-your-projects is maintained by <a href="https://github.com/datolya">datolya</a><br>
+        
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.
+        </footer>
+
+      </div>
+    </div>
+  </body>
+</html>

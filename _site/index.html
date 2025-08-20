@@ -4,16 +4,16 @@
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="/assets/css/style.css?v=9d15473bd7aa8ebd3f72644fc95c3bf522fe3ca8">
+    <link rel="stylesheet" href="/assets/css/style.css?v=fe79d28833fd616899c9ebe59c75fd7aed8c9002">
     <link rel="stylesheet" type="text/css" href="/assets/css/print.css" media="print">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Rustify Your Project (Now) | rustify-your-projects</title>
+<title>Rustify Your Python Project (Now) | rustify-your-projects</title>
 <meta name="generator" content="Jekyll v3.9.5" />
-<meta property="og:title" content="Rustify Your Project (Now)" />
+<meta property="og:title" content="Rustify Your Python Project (Now)" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Data toolbox and thoughts. Edited by Sebestyen" />
 <meta property="og:description" content="Data toolbox and thoughts. Edited by Sebestyen" />
@@ -22,9 +22,9 @@
 <meta property="og:site_name" content="rustify-your-projects" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Rustify Your Project (Now)" />
+<meta property="twitter:title" content="Rustify Your Python Project (Now)" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","description":"Data toolbox and thoughts. Edited by Sebestyen","headline":"Rustify Your Project (Now)","name":"rustify-your-projects","url":"http://localhost:4000/"}</script>
+{"@context":"https://schema.org","@type":"WebSite","description":"Data toolbox and thoughts. Edited by Sebestyen","headline":"Rustify Your Python Project (Now)","name":"rustify-your-projects","url":"http://localhost:4000/"}</script>
 <!-- End Jekyll SEO tag -->
 
     <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
@@ -52,7 +52,7 @@
       <div class="inner">
 
         <header>
-          <h1>Rustify Your Project (Now)</h1>
+          <h1>Rustify Your Python Project (Now)</h1>
           <h2> </h2>
         </header>
         <section id="downloads" class="clearfix">
@@ -104,46 +104,43 @@
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    📊 August 19th, 2025  📝 authored by Sebestyén Gergely 
 </code></pre></div></div>
 
-<p>It’s not immediately obvious why one should spend time on the <em>perfect</em> repository setup
+<p>It’s not immediately obvious why one should spend time on the <em>perfect</em> repository setup.
 Especially in Data, it is often cumbersome to sit down with your maths genius analyst colleagues and start explaining virtual 
 environments, the kind of Poetry only software engineers appreciate, why they should give a damn about linting, 
 let alone style formatting and type hints.</p>
 
 <p>Luckily, Rust exists, and people exist who build formidable tools with it for Python.
-“Rustifying” your repository means making use of those tools to cover all of the above with barely more than few clicks.
-This way, even non-technical people will enjoy seeing the speed and simplicity of the tech setup journey.</p>
+“Rustifying” your repository means making use of those tools to cover all of the above with barely more than a few clicks.
+This way, even non-technical people will enjoy the speed and simplicity of the tech setup journey.</p>
 
-<p>PART I. The <code class="language-plaintext highlighter-rouge">uv</code> radiation is strong</p>
+<p>PART I. The uv radiation is strong</p>
 
-<p><code class="language-plaintext highlighter-rouge">uv</code> <a href="https://docs.astral.sh/uv/">self-identifies</a> as a <em>fast Python package and project manager</em>. The simplicity of this
-little tagline foreshadows what it feels like working with the tool. They also attach a neat figure to prepare us for the speed that awaits down the line:</p>
+<p><code class="language-plaintext highlighter-rouge">uv</code> <a href="https://docs.astral.sh/uv/">self-identifies</a> as a <strong>fast Python package and project manager</strong>. The simplicity of this
+little tagline foreshadows what it feels like working with the tool. They also attach a neat figure to prepare us for 
+the speed that awaits:</p>
 
 <div style="text-align: center; margin: 20px 0;">
   <img src="assets/uv_chart.png" alt="Alt text" style="max-width: 100%; height: auto;" />
 </div>
 
-<p>Which brings us to the first reason uv beats Poetry » <strong>speed</strong></p>
+<p>As a Big Data Engineer, throughout my career I’ve come across a myriad of developers who have known about this speed 
+improvement for ages. Yet many of them never took the opportunity to test the tool for themselves, let alone roll it 
+out into production workflows.</p>
 
-<p>As a Big Data Engineer, in my career I’ve come across a myriad of developers who knew for ages about this speed improvement.
-Yet, many of them never took the opportunity to test the tool for themselves, let alone roll it out into production workflows.</p>
+<p>Their oversight becomes even worse when you look at uv’s second superpower » <strong>automatic version resolution</strong>. 
+Unlike with Poetry, we won’t need to pin down every single package version ourselves. Instead, it’s possible to define a generic set of Python packages and leave it to the package manager to reconcile their latest compatible versions.</p>
 
-<p>Their oversight gets worse when you look at uv’s second superpower » <strong>automatic version resolution</strong>. Unlike with Poetry, 
-we won’t need to pin down every single package version for ourselves. Instead, it’s possible to define a generic set of
-Python packages, and leave it to the package manager to reconcile their latest compatible versions.</p>
+<p>Let’s see in detail how to ride the wave of the Rust revolution.</p>
 
-<p>Let’s see in detail, how to ride the wave of the Rust revolution.</p>
-
-<p>Step zero, install the tool.
-Either install with Homebrew (for Mac):</p>
+<p>Step zero: install the tool. Either install with Homebrew (for Mac)</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install uv
 </code></pre></div></div>
 <p>… or simply use the official installation guide:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -LsSf https://astral.sh/uv/install.sh | sh
 </code></pre></div></div>
 
-<p>Now, we’re ready to deploy <code class="language-plaintext highlighter-rouge">uv</code> to set up our virtual environment.
-This will be similar to any <code class="language-plaintext highlighter-rouge">venv</code> we’ve already been adding to our Python projects, only an order of magnitude faster
-and with bullet-proof computational power.</p>
+<p>Now we’re ready to deploy uv to set up our virtual environment. This will be similar to any venv we’ve already been adding 
+to our Python projects, only an order of magnitude faster and with bulletproof computational power.</p>
 
 <p>To generate the venv, simply call:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv venv --python &lt;version&gt;
@@ -151,7 +148,7 @@ and with bullet-proof computational power.</p>
 
 <p>Now let’s assume we’re starting fresh.</p>
 
-<p>assume we’re working from scratch. We know the packages our project needs but don’t care about their exact version.
+<p>Assume we’re working from scratch. We know the packages our project needs but don’t care about their exact version.
 It shouldn’t take significant research time to understand how different packages currently work together - let <code class="language-plaintext highlighter-rouge">uv</code> 
 figure out dependencies and install the latest compatible versions!</p>
 
@@ -170,35 +167,36 @@ ruff
 </code></pre></div></div>
 
 <p>Here comes the trick: <code class="language-plaintext highlighter-rouge">uv</code> defines the most recent compatible versions of our desired shopping list, and
-generates the <code class="language-plaintext highlighter-rouge">.txt</code> file on its own. It’s worth noting that uv treats the .txt <em>as our lockfile itself</em>. 
-There’s no need for a separate lockfile like in the structure we’re used to with Poetry.</p>
+generates the <code class="language-plaintext highlighter-rouge">.txt</code> file on its own. It’s worth noting that uv treats the .txt <strong>as the lockfile itself</strong>. 
+There’s no need for a separate lockfile in the structure, like we’re used to with Poetry.</p>
 
 <p>Generate the standard .txt:</p>
 <pre><code class="language-commandline">uv pip compile requirements.in -o requirements.txt
 </code></pre>
 
-<p>Now, we’re ready to install required packages but rooting through Rust as our system-level resolver:</p>
+<p>Now we’re ready to install the required packages, routing through Rust as our system-level resolver:</p>
 <pre><code class="language-commandline">uv pip install -r requirements.txt
 </code></pre>
 
-<p>You will notice this process wraps us in well below a minute. This is despite us having used some of the most feared
+<p>You’ll notice this process wraps up in well under a minute. This is despite our having used some of the most feared 
 data-intensive packages. At this point, we now have a functional working environment. We’re ready to start creating things 🛠️</p>
 
-<p>Assume now we’ve progressed in our work. Some living and breathing code has now been added to the repository. Soon, it will be easier to maintain code with some common functional and style requirements. There is an ample and relatively 
-standard set of tools (pylint, mypy, flake8, black, pystrict …) developed around this purpose. At present, let’s limit 
-our attention to another product of Astral, the inventors of <code class="language-plaintext highlighter-rouge">uv</code>: <code class="language-plaintext highlighter-rouge">ruff</code></p>
+<p>Now assume we’ve progressed in our work. Some living and breathing code has been added to the repository. Soon, it will 
+be easier to maintain code with some common functional and style requirements. There’s an ample and relatively standard 
+set of tools (pylint, mypy, flake8, black, pystrict …) developed for this purpose. For now, let’s limit our attention to 
+another product of Astral, the inventors of uv: <code class="language-plaintext highlighter-rouge">ruff</code>.</p>
 
-<p>Let’s fetch it first then see what it’s capable of:</p>
+<p>Let’s fetch it first, then see what it’s capable of:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install ruff
 </code></pre></div></div>
-<p>… or go with your preferred installation method. Now, these three short words give us a light-speed iteration through 
-even the largest of repositories. This gives us an important life-line to weed out blatant coding errors:</p>
+<p>… or go with your preferred installation method. Now, these three short words give us lightning-speed iteration through 
+even the largest repositories. This gives us an important lifeline to weed out blatant coding errors:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruff check .
 </code></pre></div></div>
 <p>To exclude single lines from the checks, use: <code class="language-plaintext highlighter-rouge"># noqa</code> <br />
 To fix detected errors automatically, use: <code class="language-plaintext highlighter-rouge">ruff check . --fix</code></p>
 
-<p>Next, we might as well go on and format the codebase according to PEP 8 standards - with a bit of leeway for personal preference.</p>
+<p>Next, we might as well go ahead and format the codebase according to PEP 8 standards - with a bit of leeway for personal preference.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruff format .
 </code></pre></div></div>
 
@@ -217,9 +215,9 @@ ignore = [
 ]
 </code></pre></div></div>
 
-<p>Finally, consider installing <code class="language-plaintext highlighter-rouge">ruff</code> as the preferred linter in the CI/CD workflow of the codebase, be it CircleCI, 
-GitHub Actions or another tool of preference. AstralDocs have already released some promising tools in this respect, 
-to integrate with our CI/CD <code class="language-plaintext highlighter-rouge">.yml</code> file in a few simple lines of code.</p>
+<p>Finally, consider installing ruff as the preferred linter in the CI/CD workflow of the codebase, be it CircleCI, GitHub 
+Actions, or another tool of preference. AstralDocs have already released some promising tools in this respect, to integrate 
+with our CI/CD <code class="language-plaintext highlighter-rouge">.yml</code> file in just a few simple lines of code.</p>
 
 <p>And that’s it. Over and done with. Project rustified.</p>
 

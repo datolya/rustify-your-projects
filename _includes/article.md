@@ -1,57 +1,62 @@
 📊 August 19th, 2025 
 📝 authored by Sebestyén Gergely 
 
-It isn’t immediately obvious why one should invest time in the *perfect* repository setup. 
-Especially in data, it is often cumbersome to take your maths genius analyst colleagues, sit down 
-down and explain about virtual environments, the kind of poetry only software engineers know, why they should give a damn about 
-linting, let alone style formatting and type hints.
+It’s not immediately obvious why one should spend time on the *perfect* repository setup
+Especially in Data, it is often cumbersome to sit down with your maths genius analyst colleagues and start explaining virtual 
+environments, the kind of Poetry only software engineers appreciate, why they should give a damn about linting, 
+let alone style formatting and type hints.
 
 Luckily, Rust exists, and people exist who build formidable tools with it for Python.
-"Rustifying" your repository now means all of the above should take two clicks, and even non-technical people will enjoy
-seeing the speed and simplicity of their solution.
+"Rustifying" your repository means making use of those tools to cover all of the above with barely more than few clicks.
+This way, even non-technical people will enjoy seeing the speed and simplicity of the tech setup journey.
 
 PART I. The `uv` radiation is strong
 
-AstralDocs self-introduction:
-Astral's mission is to make the Python ecosystem more productive by building high-performance developer tools.
-
 `uv` [self-identifies](https://docs.astral.sh/uv/) as a *fast Python package and project manager*. The simplicity of this
-intro already gives us an impression of what it feels like using this tool. They also attach a neat figure to tell us the speed we should expect:
+little tagline foreshadows what it feels like working with the tool. They also attach a neat figure to prepare us for the speed that awaits down the line:
 
 <div style="text-align: center; margin: 20px 0;">
   <img src="assets/uv_chart.png" alt="Alt text" style="max-width: 100%; height: auto;">
 </div>
 
-This gives us the first property where `uv` beats `poetry` >> **speed**
+Which brings us to the first reason uv beats Poetry >> **speed**
 
-In my career as Big Data Engineer, I have met many developers who had been aware for many months of this speed improvement,
-yet never took the time to test the tool for themselves, let alone introduce it in production workflows.
+As a Big Data Engineer, in my career I've come across a myriad of developers who knew for ages about this speed improvement.
+Yet, many of them never took the opportunity to test the tool for themselves, let alone roll it out into production workflows.
 
-Their oversight here is made worse by the second massive feat of `uv` >> **automatic version resolution**
+Their oversight gets worse when you look at uv’s second superpower >> **automatic version resolution**. Unlike with Poetry, 
+we won’t need to pin down every single package version for ourselves. Instead, it's possible to define a generic set of
+Python packages, and leave it to the package manager to reconcile their latest compatible versions.
 
-Unlike with poetry, we will be able to define a generic set of Python packages, and leave it to our package manager to generate our
-requirements.txt file, insert the correct versions, reconcile everything, then download all of that within the fraction of a minute.
+Let's see in detail, how to ride the wave of the Rust revolution.
 
-Let's see, how we make use of the Rust revolution.
-
-First, install uv
+Step zero, install the tool.
+Either install with Homebrew (for Mac):
 ```
-# Install with Homebrew (for Mac)
 brew install uv
-# ... or simply use the official installation guide
+```
+... or simply use the official installation guide:
+```
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Now, set up the virtual environment. This will be similar to any virtual environment added to our Python project,
-only an order of magnitude faster.
-`uv venv --python <version>`
+Now, we're ready to deploy `uv` to set up our virtual environment.
+This will be similar to any `venv` we've already been adding to our Python projects, only an order of magnitude faster
+and with bullet-proof computational power.
 
-III.
-At this point, assume we're working from scratch. We know the packages needed for our project but don't care about their exact version.
-We will leave uv to figure out dependencies and install the latest available versions.
+To generate the venv, simply call:
+```
+uv venv --python <version>
+```
 
-Create a `requirements.in` file. Let's go with a few commonly used modules, that are usually computationally expensive for Poetry
-to install:
+Now let's assume we're starting fresh.
+
+assume we're working from scratch. We know the packages our project needs but don't care about their exact version.
+It shouldn't take significant research time to understand how different packages currently work together - let `uv` 
+figure out dependencies and install the latest compatible versions!
+
+To do that, we produce a `requirements.in` file. 
+Let's go with a few notorious heavy hitters that normally take ages and drain a lot of computation in Poetry:
 ```
 pyspark
 pandas
@@ -65,62 +70,62 @@ requests
 ruff
 ```
 
-Here comes the trick: we let `uv` define the most recent compatible versions of our desired packages:
+Here comes the trick: `uv` defines the most recent compatible versions of our desired shopping list, and
+generates the `.txt` file on its own. It's worth noting that uv treats the .txt *as our lockfile itself*. 
+There's no need for a separate lockfile like in the structure we're used to with Poetry.
 
-Generate the standard requirements.txt file
+Generate the standard .txt:
 ```commandline
 uv pip compile requirements.in -o requirements.txt
 ``` 
 
-Install the required packages from the dependencies `uv` generated for us:
+Now, we're ready to install required packages but rooting through Rust as our system-level resolver:
 ```commandline
 uv pip install -r requirements.txt
 ```
 
-You will notice this process has taken well below a minute, despite the data intensive nature of our packages.
-We now have a functional working environment and all the necessary tools to start creating things 🛠️
+You will notice this process wraps us in well below a minute. This is despite us having used some of the most feared
+data-intensive packages. At this point, we now have a functional working environment. We're ready to start creating things 🛠️
 
-It's worth noting that uv treats the .txt *as our lockfile itself*. There is no need for a separate lockfile like Poetry does.
+Assume now we've progressed in our work. Some living and breathing code has now been added to the repository. Soon, it will be easier to maintain code with some common functional and style requirements. There is an ample and relatively 
+standard set of tools (pylint, mypy, flake8, black, pystrict ...) developed around this purpose. At present, let's limit 
+our attention to another product of Astral, the inventors of `uv`: `ruff`
 
-Assume now we've progress in advance with our work. Our repository now has some living and breathing code.
-We will soon notice that it's easier to maintain our code with some common functional and style requirements.
-
-There is an ample and relatively standard set of tools (pylint, mypy, flake8, black, pystrict ...) widely employed by developers
-for this purpose. At present, let's limit our attention to another product of Astral, the inventors of `uv`: `ruff`
-
-Step IV. Install ruff
+Let's fetch it first then see what it's capable of:
 ```
 brew install ruff
-# Or go with your preferred installation method
 ```
-
-Now, the following gives us light-speed iterations through even the largest repositories, to check blatant coding errors:
+... or go with your preferred installation method. Now, these three short words give us a light-speed iteration through 
+even the largest of repositories. This gives us an important life-line to weed out blatant coding errors:
 ```
 ruff check .
-# To exclude single lines from the checks, use # noqa
-# To fix automatically, use:
-ruff check . --fix
 ```
+To exclude single lines from the checks, use: `# noqa` <br>
+To fix detected errors automatically, use: `ruff check . --fix`
 
-... and we can go on and format according to PEP 8 standards and a bit of leeway according to personal preference.
+Next, we might as well go on and format the codebase according to PEP 8 standards - with a bit of leeway for personal preference.
 ```
 ruff format .
-# To exclude code sections from the checks, start the block with # fmt: off and close it with # fmt: on
-# For single lines, use # fmt: skip
 ```
 
-To more precisely manage the behaviour of our linter, create a ruff.toml file in the python root repository. Here we control the behaviour for both formatting and linting.
+To exclude code sections from the checks,<br>
+start the block with `# fmt: off` <br>
+... and close it with `# fmt: on` <br>
+... for single line exclusions, use `# fmt: skip`
+
+Finally, let's manage `ruff` precisely. By adding a ruff.toml file in the python root repository, we can specifically 
+control the behaviour of both our linting and formatting workflows.
 ```
 line-length = 120
 
 [lint]
 ignore = [
-  # Set specific flake error codes to ignore here
-  # Such as this one: https://www.flake8rules.com/rules/F403.html
+  # Specific error codes to ignore
 ]
 ```
 
-Now, assume we even want to install our linter in a CI/CD workflow that we manage via CircleCI, GitHub Actions or our tool of preference. 
-As of today, we can simply rely on the official Astral tools, and add them to our `.yml` file.
+Finally, consider installing `ruff` as the preferred linter in the CI/CD workflow of the codebase, be it CircleCI, 
+GitHub Actions or another tool of preference. AstralDocs have already released some promising tools in this respect, 
+to integrate with our CI/CD `.yml` file in a few simple lines of code.
 
-Over and done with. Projects rustified.
+And that's it. Over and done with. Project rustified.

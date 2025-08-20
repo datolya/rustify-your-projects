@@ -4,7 +4,7 @@
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="/assets/css/style.css?v=2051196d2f77dd4cea82b971dc4603111ec7283c">
+    <link rel="stylesheet" href="/assets/css/style.css?v=9b0ec1667ed34e20d96ca0d89ae6ede33a7c104f">
     <link rel="stylesheet" type="text/css" href="/assets/css/print.css" media="print">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -115,6 +115,9 @@ seeing the speed and simplicity of their solution.</p>
 
 <p>PART I. The <code class="language-plaintext highlighter-rouge">uv</code> radiation is strong</p>
 
+<p>AstralDocs self-introduction:
+Astral’s mission is to make the Python ecosystem more productive by building high-performance developer tools.</p>
+
 <p><code class="language-plaintext highlighter-rouge">uv</code> <a href="https://docs.astral.sh/uv/">self-identifies</a> as a <em>fast Python package and project manager</em>. The simplicity of this
 intro already gives us an impression of what it feels like using this tool. They also attach a neat figure to tell us the speed we should expect:</p>
 
@@ -134,79 +137,88 @@ requirements.txt file, insert the correct versions, reconcile everything, then d
 
 <p>Let’s see, how we make use of the Rust revolution.</p>
 
-<p>Step I.: Install Rust</p>
-
-<p>The easiest way to have all the necessary requirements for <code class="language-plaintext highlighter-rouge">uv</code> is to install cargo on our machine, the package manager of Rust.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-&gt; cargo (Rust package manager) needs to be present on our machine
---&gt; create requirements.in
----&gt; uv pip compile requirements.in -o requirements.txt
+<p>First, install uv</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Install with Homebrew (for Mac)
+brew install uv
+# ... or simply use the official installation guide
+curl -LsSf https://astral.sh/uv/install.sh | sh
 </code></pre></div></div>
 
-<p>/ Here uv automatically generates our .txt with comments on dependencies</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv pip install -r requirements.txt
+<p>Now, set up the virtual environment. This will be similar to any virtual environment added to our Python project,
+only an order of magnitude faster.
+<code class="language-plaintext highlighter-rouge">uv venv --python &lt;version&gt;</code></p>
+
+<p>III.
+At this point, assume we’re working from scratch. We know the packages needed for our project but don’t care about their exact version.
+We will leave uv to figure out dependencies and install the latest available versions.</p>
+
+<p>Create a <code class="language-plaintext highlighter-rouge">requirements.in</code> file. Let’s go with a few commonly used modules, that are usually computationally expensive for Poetry
+to install:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pyspark
+pandas
+numpy
+pydantic
+sqlalchemy
+pyarrow
+apache-airflow
+boto3
+requests
+ruff
 </code></pre></div></div>
 
-<p>/ Make sure the .venv is correctly set for pycharm (repository root and correct Python version)
-Easy way to create uv venv: 
-<code class="language-plaintext highlighter-rouge">uv venv --python 3.12.9</code>
-<code class="language-plaintext highlighter-rouge">source .venv/bin/activate</code></p>
+<p>Here comes the trick: we let <code class="language-plaintext highlighter-rouge">uv</code> define the most recent compatible versions of our desired packages:</p>
 
-<p>Note that uv treates req.txt AS THE LOCKFILE ITSELF. So we commit it with the repo and that’s it.</p>
+<p>Generate the standard requirements.txt file</p>
+<pre><code class="language-commandline">uv pip compile requirements.in -o requirements.txt
+</code></pre>
 
-<p>Use another clever Rust tool for linting!!!</p>
+<p>Install the required packages from the dependencies <code class="language-plaintext highlighter-rouge">uv</code> generated for us:</p>
+<pre><code class="language-commandline">uv pip install -r requirements.txt
+</code></pre>
+
+<p>You will notice this process has taken well below a minute, despite the data intensive nature of our packages.
+We now have a functional working environment and all the necessary tools to start creating things 🛠️</p>
+
+<p>It’s worth noting that uv treats the .txt <em>as our lockfile itself</em>. There is no need for a separate lockfile like Poetry does.</p>
+
+<p>Assume now we’ve progress in advance with our work. Our repository now has some living and breathing code.
+We will soon notice that it’s easier to maintain our code with some common functional and style requirements.</p>
+
+<p>There is an ample and relatively standard set of tools (pylint, mypy, flake8, black, pystrict …) widely employed by developers
+for this purpose. At present, let’s limit our attention to another product of Astral, the inventors of <code class="language-plaintext highlighter-rouge">uv</code>: <code class="language-plaintext highlighter-rouge">ruff</code></p>
+
+<p>Step IV. Install ruff</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install ruff
+# Or go with your preferred installation method
+</code></pre></div></div>
+
+<p>Now, the following gives us light-speed iterations through even the largest repositories, to check blatant coding errors:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruff check .
+# To exclude single lines from the checks, use # noqa
+# To fix automatically, use:
+ruff check . --fix
+</code></pre></div></div>
+
+<p>… and we can go on and format according to PEP 8 standards and a bit of leeway according to personal preference.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruff format .
-ruff check --fix
+# To exclude code sections from the checks, start the block with # fmt: off and close it with # fmt: on
+# For single lines, use # fmt: skip
 </code></pre></div></div>
 
-<p>Let’s use <code class="language-plaintext highlighter-rouge">uv</code> since it’s much faster than poetry! 
-We want to use the rust revolution to our advantage.</p>
+<p>To more precisely manage the behaviour of our linter, create a ruff.toml file in the python root repository. Here we control the behaviour for both formatting and linting.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>line-length = 120
 
-<p>PART II. CREATE A DATA LAKE WITH GCS</p>
+[lint]
+ignore = [
+  # Set specific flake error codes to ignore here
+  # Such as this one: https://www.flake8rules.com/rules/F403.html
+]
+</code></pre></div></div>
 
-<p>We use a terraform subdir and generate resources programmatically.
-Structure our lake by raw, staging, processed etc.
-Free trial quota project with Google.</p>
+<p>Now, assume we even want to install our linter in a CI/CD workflow that we manage via CircleCI, GitHub Actions or our tool of preference. 
+As of today, we can simply rely on the official Astral tools, and add them to our <code class="language-plaintext highlighter-rouge">.yml</code> file.</p>
 
-<p>PART III. AIRFLOW CONFIG
-As of 25 April 2025, the latest supported Python version by Airflow is &lt; 3.13
-So we install last stable version 3.12.9</p>
-
-<p>WHAT’S NEW IN AIRFLOW 3.0.0 (Published 22 April)
--&gt; Event-driven architecture possible (assets, like Dagster)
--&gt; Environment can scale to zero (no need for constant uptime anymore)</p>
-
-<p>Airflow already has native support for uv <a href="https://airflow.apache.org/docs/apache-airflow/stable/start.html">by documentation</a>
-In fact installing via Poetry is NOT recommended by them!</p>
-
-<ul>
-  <li>We set home dir for install <code class="language-plaintext highlighter-rouge">export AIRFLOW_HOME=~/airflow</code>. Then copy paste commands from docs.</li>
-  <li>Note we’re working with Airflow 3.0.0 where operators are now under <code class="language-plaintext highlighter-rouge">airflow.providers.standard.operators.empty</code></li>
-  <li>Airflow 3.0.0 started copying Dagster in terms of asset driven workflows. So let’s try to use it!
-    <ul>
-      <li>Note Cloud Composer won’t have support for it for some time (only Airflow 2).</li>
-    </ul>
-  </li>
-  <li>To run Airflow with Docker Commpose, use <a href="https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html">this guide</a></li>
-  <li>Run <code class="language-plaintext highlighter-rouge">docker compose up airflow-init</code> Then <code class="language-plaintext highlighter-rouge">docker compose up</code>
-    <ul>
-      <li>Note this is not optimized for production workflows.</li>
-      <li>As per Google <a href="https://cloud.google.com/composer/docs/release-notes">release notes</a>:
-        <ul>
-          <li>we don’t know when Airflow 3.0 will be supported, 2.10.5 they released with 2 months lag</li>
-          <li>As per <a href="https://github.com/apache/airflow/issues/49646">recent discussion</a> we need to set explicit auth jwt secret for workers</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-</ul>
-
-<p>SHOW EVENT BASED FLOW IN AN AIRFLOW 3.0.0 SEPARATE ARTICLE.
-So probably
-#1 infra based: uv, ruff, docker setup for data tools (airflow[uv], postgres, kafka etc.)
-#2 Airflow 3.0.0 event based, scales to zero, reparse dag, etc. mention novelties from YT video
-https://www.youtube.com/watch?v=PMO5LPc112E&amp;t=493s</p>
-
-<h1 id="todo-add-uv-github-actions-step--circleci-maybe">TODO: Add uv github actions step + circleci maybe</h1>
+<p>Over and done with. Projects rustified.</p>
 
 
 </article>

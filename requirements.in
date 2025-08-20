@@ -1,0 +1,10 @@
+pyspark
+pandas
+numpy
+pydantic
+sqlalchemy
+pyarrow
+apache-airflow
+boto3
+requests
+ruff

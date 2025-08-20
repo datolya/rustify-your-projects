@@ -12,6 +12,9 @@ seeing the speed and simplicity of their solution.
 
 PART I. The `uv` radiation is strong
 
+AstralDocs self-introduction:
+Astral's mission is to make the Python ecosystem more productive by building high-performance developer tools.
+
 `uv` [self-identifies](https://docs.astral.sh/uv/) as a *fast Python package and project manager*. The simplicity of this
 intro already gives us an impression of what it feels like using this tool. They also attach a neat figure to tell us the speed we should expect:
 
@@ -31,69 +34,93 @@ requirements.txt file, insert the correct versions, reconcile everything, then d
 
 Let's see, how we make use of the Rust revolution.
 
-Step I.: Install Rust
+First, install uv
+```
+# Install with Homebrew (for Mac)
+brew install uv
+# ... or simply use the official installation guide
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
-The easiest way to have all the necessary requirements for `uv` is to install cargo on our machine, the package manager of Rust.
+Now, set up the virtual environment. This will be similar to any virtual environment added to our Python project,
+only an order of magnitude faster.
+`uv venv --python <version>`
+
+III.
+At this point, assume we're working from scratch. We know the packages needed for our project but don't care about their exact version.
+We will leave uv to figure out dependencies and install the latest available versions.
+
+Create a `requirements.in` file. Let's go with a few commonly used modules, that are usually computationally expensive for Poetry
+to install:
 ```
--> cargo (Rust package manager) needs to be present on our machine
---> create requirements.in
----> uv pip compile requirements.in -o requirements.txt
+pyspark
+pandas
+numpy
+pydantic
+sqlalchemy
+pyarrow
+apache-airflow
+boto3
+requests
+ruff
 ```
 
-/ Here uv automatically generates our .txt with comments on dependencies
-```
+Here comes the trick: we let `uv` define the most recent compatible versions of our desired packages:
+
+Generate the standard requirements.txt file
+```commandline
+uv pip compile requirements.in -o requirements.txt
+``` 
+
+Install the required packages from the dependencies `uv` generated for us:
+```commandline
 uv pip install -r requirements.txt
 ```
 
-/ Make sure the .venv is correctly set for pycharm (repository root and correct Python version)
-Easy way to create uv venv: 
-`uv venv --python 3.12.9`
-`source .venv/bin/activate`
+You will notice this process has taken well below a minute, despite the data intensive nature of our packages.
+We now have a functional working environment and all the necessary tools to start creating things 🛠️
 
-Note that uv treates req.txt AS THE LOCKFILE ITSELF. So we commit it with the repo and that's it.
+It's worth noting that uv treats the .txt *as our lockfile itself*. There is no need for a separate lockfile like Poetry does.
 
-Use another clever Rust tool for linting!!!
+Assume now we've progress in advance with our work. Our repository now has some living and breathing code.
+We will soon notice that it's easier to maintain our code with some common functional and style requirements.
+
+There is an ample and relatively standard set of tools (pylint, mypy, flake8, black, pystrict ...) widely employed by developers
+for this purpose. At present, let's limit our attention to another product of Astral, the inventors of `uv`: `ruff`
+
+Step IV. Install ruff
+```
+brew install ruff
+# Or go with your preferred installation method
+```
+
+Now, the following gives us light-speed iterations through even the largest repositories, to check blatant coding errors:
+```
+ruff check .
+# To exclude single lines from the checks, use # noqa
+# To fix automatically, use:
+ruff check . --fix
+```
+
+... and we can go on and format according to PEP 8 standards and a bit of leeway according to personal preference.
 ```
 ruff format .
-ruff check --fix
+# To exclude code sections from the checks, start the block with # fmt: off and close it with # fmt: on
+# For single lines, use # fmt: skip
 ```
 
-Let's use `uv` since it's much faster than poetry! 
-We want to use the rust revolution to our advantage.
+To more precisely manage the behaviour of our linter, create a ruff.toml file in the python root repository. Here we control the behaviour for both formatting and linting.
+```
+line-length = 120
 
-PART II. CREATE A DATA LAKE WITH GCS
+[lint]
+ignore = [
+  # Set specific flake error codes to ignore here
+  # Such as this one: https://www.flake8rules.com/rules/F403.html
+]
+```
 
-We use a terraform subdir and generate resources programmatically.
-Structure our lake by raw, staging, processed etc.
-Free trial quota project with Google.
+Now, assume we even want to install our linter in a CI/CD workflow that we manage via CircleCI, GitHub Actions or our tool of preference. 
+As of today, we can simply rely on the official Astral tools, and add them to our `.yml` file.
 
-PART III. AIRFLOW CONFIG
-As of 25 April 2025, the latest supported Python version by Airflow is < 3.13
-So we install last stable version 3.12.9
-
-WHAT'S NEW IN AIRFLOW 3.0.0 (Published 22 April)
--> Event-driven architecture possible (assets, like Dagster)
--> Environment can scale to zero (no need for constant uptime anymore) 
-
-Airflow already has native support for uv [by documentation](https://airflow.apache.org/docs/apache-airflow/stable/start.html)
-In fact installing via Poetry is NOT recommended by them!
-
-- We set home dir for install `export AIRFLOW_HOME=~/airflow`. Then copy paste commands from docs.
-- Note we're working with Airflow 3.0.0 where operators are now under `airflow.providers.standard.operators.empty`
-- Airflow 3.0.0 started copying Dagster in terms of asset driven workflows. So let's try to use it! 
-  - Note Cloud Composer won't have support for it for some time (only Airflow 2).
-- To run Airflow with Docker Commpose, use [this guide](https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html)
-- Run `docker compose up airflow-init` Then `docker compose up`
-  - Note this is not optimized for production workflows.
-  - As per Google [release notes](https://cloud.google.com/composer/docs/release-notes):
-    - we don't know when Airflow 3.0 will be supported, 2.10.5 they released with 2 months lag
-    - As per [recent discussion](https://github.com/apache/airflow/issues/49646) we need to set explicit auth jwt secret for workers
-
-SHOW EVENT BASED FLOW IN AN AIRFLOW 3.0.0 SEPARATE ARTICLE.
-So probably
-#1 infra based: uv, ruff, docker setup for data tools (airflow[uv], postgres, kafka etc.)
-#2 Airflow 3.0.0 event based, scales to zero, reparse dag, etc. mention novelties from YT video
-https://www.youtube.com/watch?v=PMO5LPc112E&t=493s
-
-
-# TODO: Add uv github actions step + circleci maybe
+Over and done with. Projects rustified.

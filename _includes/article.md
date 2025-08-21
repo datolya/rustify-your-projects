@@ -2,7 +2,7 @@
 📝 authored by Sebestyén Gergely 
 
 It’s not immediately obvious why one should spend time on the *perfect* repository setup.
-Especially in Data, it is often cumbersome to sit down with your maths genius analyst colleagues and start explaining virtual 
+Especially in Data, it is often cumbersome to sit down with your maths genius analyst colleagues, and start explaining virtual 
 environments, the kind of Poetry only software engineers appreciate, why they should give a damn about linting, 
 let alone style formatting and type hints.
 
@@ -25,7 +25,8 @@ improvement for ages. Yet many of them never took the opportunity to test the to
 out into production workflows.
 
 Their oversight becomes even worse when you look at uv's second superpower >> **automatic version resolution**. 
-Unlike with Poetry, we won't need to pin down every single package version ourselves. Instead, it's possible to define a generic set of Python packages and leave it to the package manager to reconcile their latest compatible versions.
+Unlike with Poetry, we won't need to pin down every single package version ourselves. Instead, it's possible to define 
+a generic set of Python packages and leave it to the package manager to reconcile their latest compatible versions.
 
 Let's see in detail how to ride the wave of the Rust revolution.
 
@@ -46,13 +47,14 @@ To generate the venv, simply call:
 uv venv --python <version>
 ```
 
-Now let's assume we're starting fresh.
+Now, let's start fresh.
 
-Assume we're working from scratch. We know the packages our project needs but don't care about their exact version.
-It shouldn't take significant research time to understand how different packages currently work together - let `uv` 
-figure out dependencies and install the latest compatible versions!
+Assume we're working from scratch. We know the instruments needed for our project but don't care about their exact version tag.
+It shouldn't take significant human research time to understand the way different packages work together - let `uv` 
+shuffle combinations in the background, figure out which dependencies will hold together, and install those pre-computed
+versions!
 
-To do that, we produce a `requirements.in` file. 
+To do that, we're going to produce a `requirements.in` file. 
 Let's go with a few notorious heavy hitters that normally take ages and drain a lot of computation in Poetry:
 ```
 pyspark
@@ -67,11 +69,11 @@ requests
 ruff
 ```
 
-Here comes the trick: `uv` defines the most recent compatible versions of our desired shopping list, and
-generates the `.txt` file on its own. It's worth noting that uv treats the .txt **as the lockfile itself**. 
+Here comes the trick: `uv` takes our desired input shopping list, defines how those individual components will be able
+to form a system, and generates the `.txt` file on its own. It's worth noting that uv treats the .txt **as the lockfile itself**. 
 There's no need for a separate lockfile in the structure, like we're used to with Poetry.
 
-Generate the standard .txt:
+Generate the standard .txt (lock)file:
 ```commandline
 uv pip compile requirements.in -o requirements.txt
 ``` 
@@ -81,8 +83,12 @@ Now we're ready to install the required packages, routing through Rust as our sy
 uv pip install -r requirements.txt
 ```
 
-You'll notice this process wraps up in well under a minute. This is despite our having used some of the most feared 
-data-intensive packages. At this point, we now have a functional working environment. We're ready to start creating things 🛠️
+You'll notice this process wraps up within a few seconds, n total we count `3.802` seconds elapsed. This is despite our 
+having used some of the most feared data-intensive packages. In comparison, running a Poetry setup without pre-defined 
+package versions and using `poetry install`, the time needed to completion was almost **2 minutes** at `1:59.74`, and with 
+CPU usage at 88% (instead of 42% with `uv`).  
+
+At this point, we now have a functional working environment. We're ready to start creating things 🛠️
 
 Now assume we've progressed in our work. Some living and breathing code has been added to the repository. Soon, it will 
 be easier to maintain code with some common functional and style requirements. There's an ample and relatively standard 
@@ -98,6 +104,12 @@ even the largest repositories. This gives us an important lifeline to weed out b
 ```
 ruff check .
 ```
+Similar to uv, testing this run on a large repository consumed `0.019` secs. <br>
+Comparing it against another linter like flake8: `4.917` secs. <br> 
+
+... once again, there's a clear advantage of siding with ruff. This is not to say it already possesses every functionality the
+alternatives do, but being so performant for such a young tool, it's making waves in software development.
+
 To exclude single lines from the checks, use: `# noqa` <br>
 To fix detected errors automatically, use: `ruff check . --fix`
 

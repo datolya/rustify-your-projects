@@ -83,7 +83,7 @@ Now we're ready to install the required packages, routing through Rust as our sy
 uv pip install -r requirements.txt
 ```
 
-You'll notice this process wraps up within a few seconds, n total we count `3.802` seconds elapsed. This is despite our 
+You'll notice this process wraps up within a few seconds, in total we count `3.802` seconds elapsed. This is despite our 
 having used some of the most feared data-intensive packages. In comparison, running a Poetry setup without pre-defined 
 package versions and using `poetry install`, the time needed to completion was almost **2 minutes** at `1:59.74`, and with 
 CPU usage at 88% (instead of 42% with `uv`).  
